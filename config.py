@@ -2,11 +2,13 @@
 Configuration for the AI Science Discovery Team.
 Maps each agent role to its LM Studio model and parameters.
 
+Original Vision vs. MVP Implementation:
+- Vision: Each agent would run on a specialized, fine-tuned model (e.g., "Physics-7B", "Engineer-13B").
+- MVP: We map all agents to the currently loaded model in LM Studio (e.g., Llama-3 or GPT-4), 
+  relying on System Prompts (defined in agents.py) to switch the "persona" and cognitive mode.
+
 IMPORTANT: Since LM Studio typically loads ONE model at a time,
 the system will auto-detect whichever model is currently loaded.
-Just load your best model (GPT-OSS 20B recommended) and the system
-will use it for all agents, with different temperatures and prompts
-to create distinct "personalities" for each role.
 """
 
 import requests
