@@ -1,0 +1,93 @@
+# 🔬 10 Frontier Science Problems for the Discovery Engine
+
+Here are 10 "unexplored" or fringe science problems designed to push the AI's first-principles reasoning to the limit. Copy these into the dashboard.
+
+---
+
+### 1. The "Nuclear Battery" (Hafnium Isomer Triggering)
+**Domain:** Nuclear Physics
+**Problem:**
+Nuclear isomers like Hafnium-178m2 store immense energy density (1000x chemical explosives) in excited nuclear states. The barrier to releasing this energy on demand (induced gamma emission) is theoretically possible but requires precise X-ray triggering that hasn't been consistently demonstrated.
+**Challenge:**
+Find a physical pathway to resonantly trigger the decay of Hafnium-178m2 using currently achievable photon sources (e.g., X-ray lasers, free-electron lasers, or coherent control). Ignore current experimental failures; focus on the nuclear structure and quantum selection rules. How can we tunnel through the spin inhibition barrier?
+
+---
+
+### 2. Macroscopic Quantum Coherence in Warm Biology
+**Domain:** Quantum Biology / Biophysics
+**Problem:**
+Quantum coherence (superposition/entanglement) is usually fragile and destroyed by heat ("decoherence"). However, some biological systems (avian navigation, photosynthesis) appear to utilize quantum effects at warm temperatures.
+**Challenge:**
+Propose a physical mechanism/structure that protects quantum states from thermal decoherence at 310K (body temp) for seconds or minutes. This would allow for "quantum biological computing" or radically efficient energy transport. Look for topological protection, error-correcting vibration modes, or specific molecular geometries that shield the qubit.
+
+---
+
+### 3. Solid-State Fusion via Lattice Confinement
+**Domain:** Condensed Matter Nuclear Science
+**Problem:**
+Standard fusion requires millions of degrees (plasma). "Cold fusion" has a stigma, but "Lattice Confinement Fusion" (NASA/Navy research) suggests nuclear reactions can occur in metal lattices loaded with deuterium due to electron screening and quantum tunneling.
+**Challenge:**
+Derive a first-principles mechanism where the probability of deuterium-deuterium fusion in a palladium/erbium lattice increases by 20 orders of magnitude. Focus on electron screening potentials, phonon-nuclear coupling, or coherent multi-body tunneling effects. What **exact** lattice geometry and stimulation (THz waves? Electron beams?) maximizes this tunneling?
+
+---
+
+### 4. Direct Mass-Energy Conversion (Non-Antimatter)
+**Domain:** High-Energy Physics
+**Problem:**
+We convert mass to energy via fission (<0.1% eff) or fusion (~0.7% eff). Antimatter is 100% efficient but impossible to make/store in bulk.
+**Challenge:**
+Is there a theoretical pathway to induce proton decay or baryon number violation on a macroscopic scale to convert matter directly to energy? Or, is there a way to extract energy from the vacuum fluctuations (Dynamical Casimir Effect) that scales up to useful power levels? Focus on extreme field gradients or rotating boundary conditions at relativistic speeds.
+
+---
+
+### 5. Gravity Modification / Propellantless Propulsion
+**Domain:** General Relativity / Field Theory
+**Problem:**
+Rockets are limited by the Rocket Equation (reaction mass). To explore the galaxy, we need propulsion that pushes against the fabric of spacetime itself (like an Alcubierre drive, but without negative mass).
+**Challenge:**
+Propose a mechanism to create a unidirectional force gradient in spacetime using ONLY electromagnetic fields and mass. Look at the coupling between electromagnetism and gravity (Gem theory) or Mach effects. Can a high-frequency, high-energy-density electromagnetic field create a measurable gravitational anomaly??
+
+---
+
+### 6. The "Universal Constructor" (Atom-by-Atom Assembly)
+**Domain:** Nanotechnology
+**Problem:**
+We want a machine that can build anything atom-by-atom (molecular manufacturing). The problem is the "sticky fingers" issue (atoms stick to the manipulator) and thermal noise.
+**Challenge:**
+Design a specific physical "tool tip" or field configuration that can pick up, move, and place a single Carbon atom into a diamond lattice structure at room temperature with >99.999% reliability. What forces (Van der Waals, covalent, electrostatic) must be balanced?
+
+---
+
+### 7. Terraforming Mars via Superconducting Magnetosphere
+**Domain:** Planetary Engineering
+**Problem:**
+Mars lost its atmosphere because it has no magnetic field to shield it from the solar wind. Re-starting the core is impossible.
+**Challenge:**
+Design a planetary-scale artificial magnetosphere. Instead of a simple solenoid, propose a stable, self-reinforcing plasma torus or a superconducting ring at the L1 Lagrange point. Calculate the required current, material properties, and energy source to deflect the solar wind for an entire planet.
+
+---
+
+### 8. Room-Temperature Topological Superconductivity
+**Domain:** Materials Science
+**Problem:**
+We want a superconductor that works at 300K and ambient pressure. Current high-Tc superconductors are brittle ceramics or high-pressure hydrides.
+**Challenge:**
+Don't just look for a new chemical formula. Propose a **meta-material architecture** or **topological state of matter** (like Majorana fermions) that forces electrons to pair up (Cooper pairs) due to geometry rather than just phonon coupling. Can we engineer a material that "tricks" electrons into interacting strongly at high temperatures?
+
+---
+
+### 9. Neutrino Communication Transceiver
+**Domain:** Particle Physics
+**Problem:**
+Neutrinos pass through the earth, making them perfect for communication (e.g., to submarines or through planets). But their interaction cross-section is tiny.
+**Challenge:**
+Propose a mechanism to increase the interaction probability of neutrinos by orders of magnitude. Is there a "resonant" material or a coherent quantum state (Bose-Einstein Condensate) that acts as an antenna for neutrinos? Focus on the weak force coherence.
+
+---
+
+### 10. Reversing Entropic Damage (The "Aging Cure")
+**Domain:** Biophysics / Thermodynamics
+**Problem:**
+Aging is essentially the accumulation of entropic errors (DNA damage, protein misfolding). Biology fights this with enzymes, but eventually loses.
+**Challenge:**
+Frame the human cell as a thermodynamic system. Propose a "Maxwell's Demon" device (molecular machine or field effect) that locally lowers entropy by identifying and repairing errors with information processing efficiency near the Landauer limit. What physical signal distinguishes a "correct" state from a "damaged" state without a reference template?

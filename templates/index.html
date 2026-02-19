@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Science Discovery Team — Dashboard</title>
+    <meta name="description" content="AI-powered multi-agent science discovery pipeline using first-principles physics reasoning.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a28;
+            --bg-card-hover: #22223a;
+            --bg-input: #0f0f1a;
+            --border: #2a2a40;
+            --border-active: #5a5aff;
+            --text-primary: #e8e8f0;
+            --text-secondary: #8888a8;
+            --text-dim: #555570;
+            --accent-blue: #4f6eff;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --accent-pink: #ec4899;
+            --gradient-main: linear-gradient(135deg, #4f6eff 0%, #8b5cf6 50%, #ec4899 100%);
+            --gradient-card: linear-gradient(135deg, rgba(79, 110, 255, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+            --shadow-glow: 0 0 30px rgba(79, 110, 255, 0.15);
+            --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ═══════════ AMBIENT BACKGROUND ═══════════ */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .ambient-orb:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            background: var(--accent-blue);
+            top: -200px;
+            left: -200px;
+            animation-duration: 25s;
+        }
+
+        .ambient-orb:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-purple);
+            top: 50%;
+            right: -150px;
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+
+        .ambient-orb:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            bottom: -100px;
+            left: 30%;
+            animation-duration: 22s;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
+        }
+
+        /* ═══════════ LAYOUT ═══════════ */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* ═══════════ HEADER ═══════════ */
+        .header {
+            text-align: center;
+            padding: 40px 0 32px;
+        }
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(79, 110, 255, 0.1);
+            border: 1px solid rgba(79, 110, 255, 0.2);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+
+        .header-badge .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); }
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 8px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* ═══════════ STATUS BAR ═══════════ */
+        .status-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .status-card {
+            flex: 1;
+            min-width: 200px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            border-color: var(--border-active);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .status-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .status-icon.lm { background: rgba(79, 110, 255, 0.15); }
+        .status-icon.pipeline { background: rgba(139, 92, 246, 0.15); }
+        .status-icon.model { background: rgba(6, 182, 212, 0.15); }
+
+        .status-label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .status-value {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .status-connected { color: var(--accent-green); }
+        .status-disconnected { color: var(--accent-red); }
+        .status-running { color: var(--accent-orange); }
+        .status-idle { color: var(--text-secondary); }
+
+        /* ═══════════ MAIN GRID ═══════════ */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ═══════════ CARDS ═══════════ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--gradient-card);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* ═══════════ INPUT SECTION ═══════════ */
+        .input-section {
+            grid-column: 1 / -1;
+        }
+
+        .problem-textarea {
+            width: 100%;
+            min-height: 150px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            resize: vertical;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        .problem-textarea:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(79, 110, 255, 0.15);
+        }
+
+        .problem-textarea::placeholder {
+            color: var(--text-dim);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 110, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 110, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(136, 136, 168, 0.1);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(136, 136, 168, 0.2);
+            color: var(--text-primary);
+        }
+
+        /* ═══════════ EXAMPLE PROBLEMS ═══════════ */
+        .examples {
+            margin-top: 16px;
+        }
+
+        .examples-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .example-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .example-chip {
+            padding: 8px 14px;
+            background: rgba(79, 110, 255, 0.08);
+            border: 1px solid rgba(79, 110, 255, 0.15);
+            border-radius: 100px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-chip:hover {
+            background: rgba(79, 110, 255, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+
+        /* ═══════════ PROGRESS ═══════════ */
+        .progress-section {
+            grid-column: 1 / -1;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 100px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient-main);
+            border-radius: 100px;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .progress-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .progress-steps {
+            display: flex;
+            gap: 4px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .step-indicator {
+            width: 40px;
+            height: 4px;
+            border-radius: 100px;
+            background: var(--border);
+            transition: background 0.5s;
+        }
+
+        .step-indicator.active {
+            background: var(--accent-blue);
+        }
+
+        .step-indicator.done {
+            background: var(--accent-green);
+        }
+
+        /* ═══════════ PIPELINE VISUALIZATION ═══════════ */
+        .pipeline-viz {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pipe-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255, 0.02);
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .pipe-step.active {
+            background: rgba(79, 110, 255, 0.1);
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .pipe-step.done {
+            opacity: 0.6;
+        }
+
+        .pipe-step.done .pipe-icon { color: var(--accent-green); }
+        .pipe-step.active .pipe-icon { color: var(--accent-blue); }
+
+        .pipe-icon {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+            color: var(--text-dim);
+        }
+
+        .pipe-label {
+            color: var(--text-secondary);
+        }
+
+        .pipe-step.active .pipe-label {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* ═══════════ LOG CONSOLE ═══════════ */
+        .log-console {
+            height: 500px;
+            overflow-y: auto;
+            background: var(--bg-input);
+            border-radius: var(--radius);
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            scroll-behavior: smooth;
+        }
+
+        .log-entry {
+            display: flex;
+            gap: 12px;
+            padding: 2px 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-time {
+            color: var(--text-dim);
+            flex-shrink: 0;
+            font-size: 11px;
+        }
+
+        .log-msg {
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+
+        .log-msg.error { color: var(--accent-red); }
+        .log-msg.success { color: var(--accent-green); }
+        .log-msg.info { color: var(--accent-cyan); }
+
+        /* ═══════════ RESULTS PANEL ═══════════ */
+        .results-section {
+            grid-column: 1 / -1;
+        }
+
+        .result-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            border-color: var(--border-active);
+        }
+
+        .result-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-card .timestamp {
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-bottom: 12px;
+        }
+
+        .result-content {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* ═══════════ ARCHITECTURE DIAGRAM ═══════════ */
+        .arch-section {
+            grid-column: 1 / -1;
+        }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .arch-node {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .arch-node:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
+        }
+
+        .arch-node .step-num {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-main);
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .arch-node .node-emoji {
+            font-size: 28px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .arch-node .node-name {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .arch-node .node-model {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        /* ═══════════ SCROLLBAR ═══════════ */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 100px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-dim);
+        }
+
+        /* ═══════════ COLLAPSE TOGGLE ═══════════ */
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .collapse-btn.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .collapsible.collapsed {
+            max-height: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-orb"></div>
+        <div class="ambient-orb"></div>
+        <div class="ambient-orb"></div>
+    </div>
+
+    <div class="container">
+        <!-- ═══════════ HEADER ═══════════ -->
+        <header class="header">
+            <div class="header-badge">
+                <span class="pulse" id="statusPulse"></span>
+                <span>AI Science Discovery Team</span>
+            </div>
+            <h1>First-Principles Discovery Engine</h1>
+            <p>Multi-agent pipeline that decontextualizes problems, reasons from fundamental physics, and assembles novel solutions no single model could find.</p>
+        </header>
+
+        <!-- ═══════════ STATUS BAR ═══════════ -->
+        <div class="status-bar">
+            <div class="status-card">
+                <div class="status-icon lm">🧠</div>
+                <div>
+                    <div class="status-label">LM Studio</div>
+                    <div class="status-value" id="lmStatus">Checking...</div>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon pipeline">⚡</div>
+                <div>
+                    <div class="status-label">Pipeline</div>
+                    <div class="status-value" id="pipelineStatus">Idle</div>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon model">🤖</div>
+                <div>
+                    <div class="status-label">Loaded Model</div>
+                    <div class="status-value" id="modelStatus">—</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ ARCHITECTURE OVERVIEW ═══════════ -->
+        <div class="card arch-section" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <div class="card-title">🏗️ Pipeline Architecture</div>
+                <button class="collapse-btn" onclick="toggleCollapse('archBody', this)">▼</button>
+            </div>
+            <div class="card-body collapsible" id="archBody">
+                <div class="arch-grid">
+                    <div class="arch-node">
+                        <span class="step-num">1</span>
+                        <span class="node-emoji">🎯</span>
+                        <div class="node-name">Orchestrator</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">2</span>
+                        <span class="node-emoji">💡</span>
+                        <div class="node-name">Hypothesis Gen</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">3</span>
+                        <span class="node-emoji">🔬</span>
+                        <div class="node-name">Step Decomposer</div>
+                        <div class="node-model">Llama 3.1 8B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">4</span>
+                        <span class="node-emoji">⚛️</span>
+                        <div class="node-name">Physics Oracle</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">5</span>
+                        <span class="node-emoji">🔗</span>
+                        <div class="node-name">Chain Assembler</div>
+                        <div class="node-model">Llama 3.1 8B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">6</span>
+                        <span class="node-emoji">🏗️</span>
+                        <div class="node-name">Engineer</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">7</span>
+                        <span class="node-emoji">🔄</span>
+                        <div class="node-name">Challenger</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">8</span>
+                        <span class="node-emoji">🔍</span>
+                        <div class="node-name">Overseer</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                    <div class="arch-node">
+                        <span class="step-num">9</span>
+                        <span class="node-emoji">📝</span>
+                        <div class="node-name">Evaluator</div>
+                        <div class="node-model">GPT-OSS 20B</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ INPUT SECTION ═══════════ -->
+        <div class="card input-section" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <div class="card-title">🚀 Frontier Problem</div>
+            </div>
+            <div class="card-body">
+                <textarea 
+                    class="problem-textarea" 
+                    id="problemInput"
+                    placeholder="Describe a frontier science problem...&#10;&#10;Example: We have computationally discovered 1000+ theoretically stable crystal structures (verified by DFT calculations) that have no known synthesis route. These include materials with predicted novel superconducting, topological, or ultra-hard properties. The challenge: find physically possible ways to actually manufacture these materials, even if the required conditions are extreme."
+                ></textarea>
+                <div class="btn-row">
+                    <button class="btn btn-primary" id="startBtn" onclick="startPipeline()">
+                        ⚡ Launch Discovery
+                    </button>
+                    <button class="btn btn-danger" id="stopBtn" onclick="stopPipeline()" style="background: #ef4444; color: white; border: 1px solid #b91c1c; opacity: 0.5; pointer-events: none;">
+                        🛑 STOP
+                    </button>
+                    <button class="btn btn-secondary" id="resetBtn" onclick="hardReset()" style="color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                        ⚠️ HARD RESET
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearLogs()">
+                        🗑️ Clear Logs
+                    </button>
+                </div>
+                <div class="examples">
+                    <div class="examples-label">Example frontier problems</div>
+                    <div class="example-chips">
+                        <div class="example-chip" onclick="setExample(0)">🔬 Novel material synthesis</div>
+                        <div class="example-chip" onclick="setExample(1)">⚡ Room-temp superconductor</div>
+                        <div class="example-chip" onclick="setExample(2)">🚀 FTL communication</div>
+                        <div class="example-chip" onclick="setExample(3)">🌡️ Absolute zero approach</div>
+                        <div class="example-chip" onclick="setExample(4)">⚗️ Metallic hydrogen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ PROGRESS ═══════════ -->
+        <div class="card progress-section" id="progressSection" style="margin-bottom: 24px; display: none;">
+            <div class="card-header">
+                <div class="card-title">📊 Pipeline Progress</div>
+            </div>
+            <div class="card-body">
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-message" id="progressMessage">Initializing...</div>
+                <div class="progress-steps" id="progressSteps">
+                    <!-- Step indicators will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ MAIN GRID: PIPELINE + LOGS ═══════════ -->
+        <div class="main-grid" style="margin-bottom: 24px;">
+            <!-- Pipeline Steps Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🔬 Pipeline Steps</div>
+                </div>
+                <div class="card-body">
+                    <div class="pipeline-viz" id="pipelineViz">
+                        <div class="pipe-step" data-step="1">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">1-2. Orchestrator — Select target</span>
+                        </div>
+                        <div class="pipe-step" data-step="2">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">3. Hypothesis Generator — Propose approaches</span>
+                        </div>
+                        <div class="pipe-step" data-step="3">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">4. Step Decomposer — Atomic physics steps</span>
+                        </div>
+                        <div class="pipe-step" data-step="4">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">5. Physics Oracle — First-principles validation</span>
+                        </div>
+                        <div class="pipe-step" data-step="5">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">6. Chain Assembler — Build pathways</span>
+                        </div>
+                        <div class="pipe-step" data-step="6">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">7. Engineering Proposer — Design solutions</span>
+                        </div>
+                        <div class="pipe-step" data-step="7">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">8. Requirement Challenger — Question assumptions</span>
+                        </div>
+                        <div class="pipe-step" data-step="8">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">9. Overseer — Synthesize solutions</span>
+                        </div>
+                        <div class="pipe-step" data-step="9">
+                            <span class="pipe-icon">⏳</span>
+                            <span class="pipe-label">10. Final Evaluator — Write thesis</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Console -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">📟 Live Console</div>
+                    <span style="font-size: 11px; color: var(--text-dim);" id="logCount">0 entries</span>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="log-console" id="logConsole">
+                        <div class="log-entry">
+                            <span class="log-time">--:--:--</span>
+                            <span class="log-msg info">Waiting for pipeline to start...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ RESULTS ═══════════ -->
+        <div class="card results-section" id="resultsSection">
+            <div class="card-header">
+                <div class="card-title">🏆 Discovery Results</div>
+                <button class="btn btn-secondary" onclick="loadResults()" style="padding: 6px 14px; font-size: 12px;">
+                    🔄 Refresh
+                </button>
+            </div>
+            <div class="card-body" id="resultsBody">
+                <div style="text-align: center; color: var(--text-dim); padding: 40px;">
+                    No discoveries yet. Launch the pipeline to begin!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════ SOCKET CONNECTION ═══════════
+        const socket = io();
+        let autoScroll = true;
+
+        // ═══════════ EXAMPLE PROBLEMS ═══════════
+        const examples = [
+            `We have computationally discovered over 1000 theoretically stable crystal structures (verified by DFT calculations and molecular dynamics simulations) that have no known synthesis route. These include:\n- Materials with predicted room-temperature superconducting properties\n- Ultra-hard materials exceeding diamond hardness\n- Topological insulators with novel surface states\n- Materials with predicted extreme thermoelectric efficiency\n\nThe challenge: find physically possible ways to actually manufacture ANY of these materials, even if the required conditions are extreme (we don't care about practicality — only physical possibility). Many of these materials require atomic arrangements that don't form naturally and may need exotic conditions (extreme pressures, temperatures, electromagnetic fields, radiation environments, etc.)`,
+            
+            `Room-temperature superconductivity at ambient pressure remains one of the biggest unsolved problems in condensed matter physics. We know from BCS theory that conventional superconductors are limited by the Debye temperature. Unconventional mechanisms (like those in cuprates and hydrides) offer higher Tc but require extreme pressures or specific crystal anisotropies.\n\nThe challenge: find a physical pathway to achieve persistent zero-resistance current flow at 300K and 1 atm. This could involve ANY physical mechanism — not just Cooper pairing. Consider: topological protection, many-body quantum states, exotic quasiparticles, engineered band structures, phonon engineering, or entirely novel physical mechanisms.`,
+            
+            `Information cannot travel faster than light according to special relativity. However, there may be ways to effectively transmit information over vast distances that don't technically violate causality but achieve the practical effect of "faster than light" communication.\n\nThe challenge: find a physically possible mechanism for transmitting classical information between two points separated by 1 light-year in less than 1 year of proper time. Consider: quantum entanglement protocols, spacetime engineering, ER=EPR bridge utilization, quantum field effects, tachyonic fields, alcubierre-like metrics for information rather than matter, or any other mechanism that doesn't create closed timelike curves.`,
+            
+            `The third law of thermodynamics states that absolute zero (0 K) cannot be reached in a finite number of steps. Current cooling techniques (laser cooling, evaporative cooling, adiabatic demagnetization) have reached ~38 picokelvin.\n\nThe challenge: find a physical pathway to reach temperatures below 1 picokelvin, or propose a mechanism that could approach absolute zero more efficiently than current methods. Consider quantum cooling mechanisms, entropy manipulation, novel phase transitions, gravitational effects on temperature, or entirely new thermodynamic protocols.`,
+            
+            `Metallic hydrogen — hydrogen compressed to the point where it becomes an electrical conductor — has been theoretically predicted since 1935 and is believed to exist in the cores of gas giants. Achieving it in a laboratory has been extremely difficult, with claims disputed.\n\nThe challenge: find a physically possible pathway to create STABLE metallic hydrogen at conditions more accessible than the >400 GPa currently believed necessary. Consider: metastable states, novel compression pathways, electromagnetic field assistance, quantum confinement effects, or alternative routes to metallic hydrogen that don't require extreme static compression.`
+        ];
+
+        function setExample(index) {
+            document.getElementById('problemInput').value = examples[index];
+        }
+
+        // ═══════════ PIPELINE CONTROL ═══════════
+        async function startPipeline() {
+            const problem = document.getElementById('problemInput').value.trim();
+            if (!problem) {
+                alert('Please describe a problem first.');
+                return;
+            }
+
+            try {
+                const resp = await fetch('/api/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ problem })
+                });
+                const data = await resp.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Update UI State
+                setRunningUI(true);
+                document.getElementById('progressSection').style.display = 'block';
+                document.getElementById('logConsole').innerHTML = '';
+            } catch (e) {
+                alert('Error starting pipeline: ' + e.message);
+            }
+        }
+
+        function setRunningUI(isRunning) {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            if (isRunning) {
+                startBtn.disabled = true;
+                startBtn.style.opacity = '0.5';
+                stopBtn.style.opacity = '1';
+                stopBtn.style.pointerEvents = 'auto';
+                stopBtn.textContent = '🛑 STOPPING...';
+                setTimeout(() => { stopBtn.textContent = '🛑 STOP NOW'; }, 500);
+            } else {
+                startBtn.disabled = false;
+                startBtn.style.opacity = '1';
+                stopBtn.style.opacity = '0.5';
+                stopBtn.style.pointerEvents = 'none';
+                stopBtn.textContent = '🛑 STOP';
+            }
+        }
+
+        async function stopPipeline() {
+            try {
+                const stopBtn = document.getElementById('stopBtn');
+                stopBtn.textContent = '⌛ ABORTING...';
+                await fetch('/api/stop', { method: 'POST' });
+            } catch (e) {
+                console.error('Error stopping:', e);
+            }
+        }
+
+        async function hardReset() {
+            if (!confirm("This will forcefully reset the discovery engine. Use if the system is stuck. Continue?")) return;
+            try {
+                await fetch('/api/hard_reset', { method: 'POST' });
+                location.reload();
+            } catch (e) {
+                alert('Reset failed: ' + e.message);
+            }
+        }
+
+        function clearLogs() {
+            document.getElementById('logConsole').innerHTML = '';
+        }
+
+        // ═══════════ SOCKET EVENTS ═══════════
+        socket.on('log', (entry) => {
+            const console_el = document.getElementById('logConsole');
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+
+            let msgClass = '';
+            if (entry.message.includes('❌') || entry.message.includes('Error')) msgClass = 'error';
+            else if (entry.message.includes('✅') || entry.message.includes('complete')) msgClass = 'success';
+            else if (entry.message.includes('🚀') || entry.message.includes('═')) msgClass = 'info';
+
+            div.innerHTML = `
+                <span class="log-time">${entry.time}</span>
+                <span class="log-msg ${msgClass}">${escapeHtml(entry.message)}</span>
+            `;
+            console_el.appendChild(div);
+
+            if (autoScroll) {
+                console_el.scrollTop = console_el.scrollHeight;
+            }
+
+            document.getElementById('logCount').textContent = 
+                console_el.children.length + ' entries';
+        });
+
+        socket.on('progress', (data) => {
+            const pct = Math.round((data.step / data.total) * 100);
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressMessage').textContent = data.message;
+
+            // Update pipeline visualization
+            const steps = document.querySelectorAll('.pipe-step');
+            const currentStep = Math.ceil(data.step);
+            steps.forEach((step, i) => {
+                const stepNum = parseInt(step.dataset.step);
+                const icon = step.querySelector('.pipe-icon');
+                step.classList.remove('active', 'done');
+                
+                if (stepNum < currentStep) {
+                    step.classList.add('done');
+                    icon.textContent = '✅';
+                } else if (stepNum === currentStep) {
+                    step.classList.add('active');
+                    icon.textContent = '⚡';
+                } else {
+                    icon.textContent = '⏳';
+                }
+            });
+
+            // Update status
+            if (data.message.includes('Complete') || data.message.includes('complete')) {
+                document.getElementById('pipelineStatus').textContent = 'Complete';
+                document.getElementById('pipelineStatus').className = 'status-value status-connected';
+                document.getElementById('startBtn').style.display = 'flex';
+                document.getElementById('stopBtn').style.display = 'none';
+                loadResults();
+            } else if (data.step > 0) {
+                document.getElementById('pipelineStatus').textContent = `Running (Step ${currentStep}/10)`;
+                document.getElementById('pipelineStatus').className = 'status-value status-running';
+            }
+        });
+
+        // ═══════════ STATUS POLLING ═══════════
+        async function checkStatus() {
+            try {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+
+                const lmEl = document.getElementById('lmStatus');
+                if (data.lm_studio_connected) {
+                    lmEl.textContent = 'Connected';
+                    lmEl.className = 'status-value status-connected';
+                    document.getElementById('statusPulse').style.background = 'var(--accent-green)';
+                } else {
+                    lmEl.textContent = 'Disconnected';
+                    lmEl.className = 'status-value status-disconnected';
+                    document.getElementById('statusPulse').style.background = 'var(--accent-red)';
+                }
+
+                const modelEl = document.getElementById('modelStatus');
+                modelEl.textContent = data.loaded_model || '—';
+
+                setRunningUI(data.pipeline_running);
+            } catch (e) {
+                // Server not running
+            }
+        }
+
+        // ═══════════ RESULTS ═══════════
+        async function loadResults() {
+            try {
+                const resp = await fetch('/api/results');
+                const results = await resp.json();
+                const body = document.getElementById('resultsBody');
+
+                if (results.length === 0) {
+                    body.innerHTML = '<div style="text-align: center; color: var(--text-dim); padding: 40px;">No discoveries yet. Launch the pipeline to begin!</div>';
+                    return;
+                }
+
+                body.innerHTML = '';
+                for (const r of results) {
+                    const card = document.createElement('div');
+                    card.className = 'result-card';
+                    card.innerHTML = `
+                        <h3>🔬 Discovery Run</h3>
+                        <div class="timestamp">Generated: ${r.timestamp}</div>
+                        <div class="result-content">${escapeHtml(r.content)}</div>
+                    `;
+                    body.appendChild(card);
+                }
+            } catch (e) {
+                console.error('Error loading results:', e);
+            }
+        }
+
+        // ═══════════ UTILS ═══════════
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleCollapse(id, btn) {
+            const el = document.getElementById(id);
+            el.classList.toggle('collapsed');
+            btn.classList.toggle('collapsed');
+        }
+
+        // ═══════════ INIT ═══════════
+        checkStatus();
+        setInterval(checkStatus, 10000);
+        loadResults();
+
+        // Detect scroll to toggle auto-scroll
+        document.getElementById('logConsole').addEventListener('scroll', function() {
+            const el = this;
+            autoScroll = (el.scrollHeight - el.scrollTop - el.clientHeight) < 50;
+        });
+    </script>
+</body>
+</html>

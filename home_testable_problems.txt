@@ -1,0 +1,258 @@
+# 🏠🔬 12 Home-Testable Frontier Science Problems
+# ================================================
+# Each problem can be explored with common household items:
+# microwave, oven, heater, copper wire, batteries, magnets, salt, water, etc.
+# The goal: genuinely useful findings for people without money or labs.
+#
+# Copy any of these into the Discovery Engine dashboard.
+
+---
+
+### 1. Microwave-Assisted Water Purification / Disinfection
+**Domain:** Environmental Science / Microbiology
+**Problem:**
+Billions of people lack clean drinking water. Boiling works but uses a lot of fuel.
+Microwave radiation (2.45 GHz) heats water but ALSO has direct electromagnetic
+effects on bacterial cell membranes that may destroy pathogens at temperatures
+BELOW boiling point (potentially 60-70°C instead of 100°C), saving significant energy.
+**Challenge:**
+Determine the optimal microwave power level, exposure time, and water volume to
+achieve >99% pathogen kill at the LOWEST possible temperature. Is there a
+frequency-dependent resonance effect on bacterial membranes that causes
+disruption before thermal death? If so, a cheap modified microwave emitter
+could purify water using far less energy than boiling.
+**Home Test:** Microwave water samples at different power/time combos. Compare
+bacterial survival (simple methylene blue or yeast viability tests) between
+microwave-heated vs. stove-heated water at the same temperature.
+
+---
+
+### 2. Copper's Antimicrobial Surface Enhancement via Thermal Cycling
+**Domain:** Materials Science / Public Health
+**Problem:**
+Copper surfaces kill bacteria within hours (the "oligodynamic effect"), but the
+mechanism slows as copper oxide forms. Hospitals can't afford to constantly polish
+copper surfaces. Could a simple thermal cycling process (heating and cooling
+copper) create a specific surface micro-texture or oxide pattern that ACCELERATES
+antimicrobial action instead of hindering it?
+**Challenge:**
+Find the optimal heating temperature (oven: 150-250°C) and cooling rate (air vs.
+water quench) for copper sheets that maximizes antimicrobial surface area and
+maintains a self-renewing oxide layer. The result would be a free, DIY protocol
+for making "super-antimicrobial" copper door handles, surfaces, and water vessels
+for communities without access to healthcare.
+**Home Test:** Heat copper sheets/pipes in oven at different temps, cool differently.
+Test antimicrobial performance by placing bread/fruit on treated vs untreated copper.
+
+---
+
+### 3. Thermoelectric Power from Waste Heat (Heater/Stove Gradient)
+**Domain:** Energy Physics / Thermodynamics
+**Problem:**
+Enormous amounts of heat are wasted (heaters, stoves, car engines, industrial
+exhausts). Thermoelectric generators (TEGs) convert temperature DIFFERENCES into
+electricity (Seebeck effect), but commercial TEGs are expensive. Can a DIY
+thermoelectric setup using common metals (copper + iron/steel wire — a thermocouple)
+be optimized to generate USEFUL amounts of electricity from household heat waste?
+**Challenge:**
+Determine the optimal junction geometry, number of series-connected thermocouples,
+and temperature differential to generate enough power from a heater or stove to
+charge a phone (5V, 500mA = 2.5W). Focus on maximizing the Seebeck coefficient
+through wire gauge, junction treatment (acid etching? Oxidation?), and thermal
+isolation between hot and cold sides.
+**Home Test:** Build a copper-iron thermocouple array. Place hot side on heater/
+stove, cold side in air/water. Measure voltage with multimeter. Iterate on
+geometry to maximize power output.
+
+---
+
+### 4. Microwave-Induced Plasma for Material Synthesis
+**Domain:** Plasma Physics / Chemistry
+**Problem:**
+Plasma (ionized gas) is used industrially for coating, sterilizing, and even
+creating nanomaterials — but requires expensive vacuum chambers. A grape cut in
+half in a microwave generates plasma due to electromagnetic field concentration.
+**Challenge:**
+Can this home microwave plasma be DIRECTED and CONTROLLED to do useful work?
+Specifically: can microwave plasma be used to deposit thin carbon films (from
+pencil graphite), reduce metal oxides (rust removal), or synthesize simple
+nanostructures? Determine the geometry of objects that maximally concentrate the
+microwave field to create stable, directional plasma at atmospheric pressure.
+**Home Test:** Experiment with different shapes (pointed wires, split objects)
+in a microwave to create controlled plasma. Test if items placed near the plasma
+zone show surface changes (coat a glass slide, attempt rust removal on iron).
+⚠️ SAFETY: Use a sacrificial microwave, ensure ventilation, never use metals
+that could cause arcing damage.
+
+---
+
+### 5. Passive Radiative Cooling Below Ambient Temperature
+**Domain:** Thermodynamics / Materials Science
+**Problem:**
+Air conditioning uses massive energy. But the sky is essentially a heat sink at
+3K (-270°C). Certain surfaces can radiate heat through the atmospheric infrared
+window (8-13 μm) FASTER than they absorb heat from surroundings, cooling below
+ambient temperature even in sunlight — no electricity needed.
+**Challenge:**
+Design a DIY radiative cooling surface using HOUSEHOLD materials. Aluminum foil
+(solar reflector) + specific paint/coating combinations (high IR emissivity in
+8-13μm window). What is the optimal layered structure? White paint on aluminum?
+Specific polymer films (plastic wrap types)? The goal: achieve measurable cooling
+(even 2-5°C below ambient) that could reduce indoor temperatures for free.
+**Home Test:** Create test panels with different coatings (white paint on foil,
+plastic wrap layers on foil, bare foil). Place outdoors facing the sky. Measure
+surface temperature vs. ambient with a thermometer. Compare day and night
+performance.
+
+---
+
+### 6. Electromagnetic Seed Treatment for Enhanced Germination
+**Domain:** Agricultural Biophysics
+**Problem:**
+Millions of small farmers struggle with poor germination rates. Research shows
+that exposing seeds to specific electromagnetic fields BEFORE planting can
+increase germination rate by 10-40% and accelerate early growth. The mechanism
+(ion channel activation? Aquaporin stimulation?) is not fully understood.
+**Challenge:**
+Determine the OPTIMAL electromagnetic exposure for common crop seeds (beans,
+corn, tomatoes). Variables: frequency (static magnet vs. alternating field from
+copper coil), field strength (number of coil turns, current from batteries),
+exposure time (minutes to hours). What is the underlying biophysical mechanism?
+**Home Test:** Wind copper wire around a cardboard tube to make a coil. Connect
+to battery/power supply. Place seeds inside for various durations. Plant treated
+vs. untreated seeds and track germination rate and growth over 2-3 weeks.
+
+---
+
+### 7. Solar Water Desalination Efficiency Optimization
+**Domain:** Thermodynamics / Environmental Engineering
+**Problem:**
+Solar stills (evaporate saltwater, condense freshwater) are ancient but inefficient
+(~30-40% solar efficiency). Modern research shows that dark, porous materials
+floating on the water surface can achieve 80%+ efficiency by localizing heat at
+the evaporation interface instead of heating the bulk water.
+**Challenge:**
+Design an optimized solar still using ONLY household materials that maximizes
+distillation rate. What is the best dark absorber (burnt cloth? Charcoal? Black
+sponge)? What wick structure draws water to the hot surface fastest? How should
+the condensation surface be angled and cooled? Target: produce drinkable water
+from seawater/contaminated water at maximum rate per unit area.
+**Home Test:** Build test stills using plastic containers, black fabric, plastic
+wrap. Measure water output per hour. Compare bulk-heating vs. surface-heating
+designs. Test with salt water — measure salt content of output.
+
+---
+
+### 8. DIY Electrochemical Water Splitting — Optimal Electrode Treatment
+**Domain:** Electrochemistry / Energy
+**Problem:**
+Green hydrogen production via water electrolysis could replace fossil fuels, but
+platinum catalysts make it expensive. Rust (iron oxide) and nickel (from old coins
+or stainless steel) can catalyze water splitting, but efficiency varies hugely
+based on surface preparation.
+**Challenge:**
+Find the optimal HOME treatment for iron/nickel/stainless steel electrodes that
+maximizes hydrogen production rate per watt of input electricity. Variables:
+surface roughening (sandpaper grit), thermal oxidation (oven treatment to create
+specific oxide layer), electrochemical activation cycles, electrolyte concentration
+(baking soda/KOH). Can a treated nail approach the performance of platinum?
+**Home Test:** Electrolyze water (baking soda + water + 9V battery or USB power)
+with different electrode treatments. Measure gas production rate by collecting
+bubbles in an inverted container. Compare treated vs. untreated electrodes.
+
+---
+
+### 9. Thermal Mass Optimization for Passive Home Heating/Cooling
+**Domain:** Thermodynamics / Architecture
+**Problem:**
+Heating and cooling buildings uses ~40% of global energy. Thermal mass (water
+containers, concrete, phase-change materials) can store heat during the day and
+release it at night, but optimal placement and material choice isn't well studied
+for HOME-SCALE applications.
+**Challenge:**
+Determine the OPTIMAL thermal mass setup for a single room using common materials.
+How many liters of water, at what position, in what container, with what insulation
+arrangement, maximizes temperature stability? Can adding salt (changing specific
+heat/freezing point) or using sealed containers of wax/coconut oil (phase change
+at ~24°C) outperform water? Model the heat transfer and verify experimentally.
+**Home Test:** Place water containers (jugs, bottles) in a room with a heater.
+Measure room temperature cycling over 24 hours with vs. without thermal mass.
+Test different positions, volumes, and materials (water, salt water, oil).
+
+---
+
+### 10. Copper Mesh EMF Shielding — Optimal Geometry for Health/Electronics
+**Domain:** Electromagnetic Engineering
+**Problem:**
+EMF shielding (Faraday cages) blocks electromagnetic radiation but is usually
+expensive. Copper mesh/screen can create effective shielding, but the relationship
+between mesh hole size, wire thickness, and shielding at specific frequencies
+(WiFi 2.4/5GHz, microwave 2.45GHz, cell 700MHz-2.5GHz) isn't well characterized
+for HOME-MADE shields.
+**Challenge:**
+Determine the maximum mesh hole size (minimum copper used) that still blocks
+>99% of specific frequencies. Can household copper wire (stripped electrical wire)
+woven into a simple grid pattern on a frame be as effective as commercial shielding?
+What is the optimal pattern — square grid, hexagonal, or random mesh? This enables
+DIY shielding for sensitive electronics or EMF-concerned individuals at near-zero cost.
+**Home Test:** Build mesh grids with different hole sizes from stripped copper wire.
+Place phone inside, measure signal loss (signal bars, WiFi strength app). Test
+microwave leakage with mesh over the door window. Map shielding vs. hole size.
+
+---
+
+### 11. Bio-Battery from Soil/Compost (Microbial Fuel Cell)
+**Domain:** Bioelectrochemistry / Renewable Energy
+**Problem:**
+Microbial fuel cells (MFCs) generate electricity from bacteria decomposing organic
+matter in soil — essentially a battery powered by dirt. Current designs produce
+very low power (~0.5V, microamps). Scaling up could provide free electricity from
+compost/waste in off-grid communities.
+**Challenge:**
+Optimize a soil-based microbial fuel cell for maximum power density using home
+materials. Variables: electrode material (copper, carbon/graphite from pencils,
+aluminum), soil type (compost vs. garden soil), moisture level, nutrient addition
+(sugar, urine), electrode surface area and spacing. Can series/parallel combinations
+of optimized cells produce enough power for an LED or sensor?
+**Home Test:** Insert copper and graphite electrodes into wet soil/compost.
+Measure voltage/current with multimeter. Test different soils, depths, and
+nutrients. Connect multiple cells in series to light an LED.
+
+---
+
+### 12. Acoustic Levitation & Manipulation with DIY Ultrasonic Arrays
+**Domain:** Acoustics / Physics
+**Problem:**
+Ultrasonic transducers (from cheap distance sensors ~$1 each) can create standing
+waves that levitate small objects (foam beads, water drops). This is used in
+contactless manufacturing and drug delivery research. The physics of optimal
+array geometry for HOME-BUILT levitators isn't well explored.
+**Challenge:**
+Determine the minimum number of ultrasonic transducers and optimal arrangement
+to reliably levitate and MOVE objects along a controlled path. Can a DIY array
+made from cheap HC-SR04 sensor transducers, driven by an Arduino, manipulate
+droplets of liquid for contactless mixing (poor-person's lab-on-chip)?
+**Home Test:** Extract transducers from HC-SR04 sensors (~$1). Build a phased
+array driven by Arduino. Map the acoustic field with a microphone. Attempt
+levitation of styrofoam beads and water drops. Test object manipulation by
+phase-shifting the drive signals.
+
+---
+
+# 💡 QUICK-START RECOMMENDATIONS
+#
+# EASIEST TO TEST (start here):
+#   → #6 (Seed Treatment) - just needs copper wire, battery, seeds, soil
+#   → #11 (Bio-Battery) - just needs copper, pencil graphite, soil, multimeter
+#   → #8 (Water Splitting) - 9V battery, nails, baking soda, water
+#
+# MOST IMPACTFUL FOR POOR COMMUNITIES:
+#   → #1 (Water Purification) - could save lives
+#   → #7 (Solar Desalination) - clean water from seawater
+#   → #2 (Copper Antimicrobial) - disease prevention
+#   → #3 (Waste Heat Electricity) - free power
+#
+# MOST NOVEL / PUBLICATION POTENTIAL:
+#   → #4 (Microwave Plasma) - genuinely unexplored territory
+#   → #5 (Radiative Cooling) - cutting-edge research, DIY angle is new
+#   → #6 (Seed Treatment) - agricultural impact, mechanism unknown
