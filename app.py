@@ -1,6 +1,10 @@
 """
 Web Application for the AI Science Discovery Team.
 Provides a real-time dashboard to monitor and control the discovery pipeline.
+
+This dashboard visualizes the "thinking process" of the AI team, allowing the user
+to see the "Step Decomposer" break down problems and the "Physics Oracle" validate them
+in real-time. This transparency is key to trusting the "First Principles" approach.
 """
 
 import os

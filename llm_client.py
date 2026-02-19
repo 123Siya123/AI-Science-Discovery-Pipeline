@@ -1,7 +1,12 @@
 """
 LLM Client for the AI Science Discovery Team.
 Handles all communication with LM Studio's OpenAI-compatible API.
-Includes retry logic, streaming, and model switching.
+
+This module is designed to be robust for long-running "First Principles" reasoning
+chains. It includes:
+1. Smart Retries: Handling connection drops (common with local LLMs).
+2. Streaming: To allow the user to interrupt the process if the physics drift.
+3. Model Agnostic: Can switch between different models if available.
 """
 
 import json

@@ -14,12 +14,13 @@ Architecture Summary:
          ┌────────────────────────────────────────────────────────┘
          │  FOR EACH HYPOTHESIS:
          │
-         ├──► Step Decomposer ──► [decontextualized questions]
+         │  (Decontextualization Step)
+         ├──► Step Decomposer ──► [atomic, isolated physics questions]
          │                              │
          │                    FOR EACH QUESTION:
          │                              │
          │                    ├──► Physics Oracle ──► [validated answer]
-         │                              │
+         │                              │   (Uses First Principles)
          │                    └─────────┘
          │
          ├──► Chain Assembler ──► [validated pathway]
@@ -31,6 +32,12 @@ Architecture Summary:
          │         └──► Physics Oracle ─┘
          │
          └──► Overseer ──► Final Evaluator ──► DISCOVERY THESIS
+
+Original Vision vs. Implementation:
+- Vision: A team of distinct, fine-tuned models (e.g., a "Physics-Only" model).
+- Implementation: "Persona-based" agents using a single powerful LLM (e.g., GPT-4/Llama-3) directed by strict system prompts.
+- Vision: Massive parallel simulation of 1000s of materials.
+- Implementation: Linear execution of ~3-5 hypotheses due to compute/latency limits of a single user setup.
 """
 
 import json
@@ -60,7 +67,7 @@ from llm_client import LLMClient
 def safe_json_parse(text):
     """
     Try to parse JSON from model output. Models often wrap JSON in markdown 
-    code blocks or add extra text. This tries multiple strategies.
+    code blocks or add extra text. This tries multiple strategies to extract valid JSON.
     """
     if not text:
         return None
@@ -89,7 +96,7 @@ def safe_json_parse(text):
             except json.JSONDecodeError:
                 pass
 
-    # Strategy 4: Return as plain text wrapped in dict
+    # Strategy 4: Return as plain text wrapped in dict (Partial Failure)
     return {"raw_text": text}
 
 
@@ -97,6 +104,12 @@ class DiscoveryPipeline:
     """
     The main discovery pipeline orchestrator.
     Runs all 10 steps of the AI Science Discovery Team.
+    
+    This class manages the lifecycle of the discovery process:
+    1. Orchestration: Calling agents in the correct order.
+    2. State Management: Passing data (hypotheses, validations) between steps.
+    3. Error Handling: Managing failures in LLM generation or parsing.
+    4. Persistence: Saving progress to disk so runs can be reviewed.
     """
 
     def __init__(self, log_callback=None, progress_callback=None):
@@ -107,13 +120,24 @@ class DiscoveryPipeline:
         self.is_running = False
         self.should_stop = False
 
-        # Create results directory
+        # Create results directory to store artifacts
         os.makedirs(RESULTS_DIR, exist_ok=True)
         os.makedirs(os.path.join(RESULTS_DIR, "discoveries"), exist_ok=True)
 
     def _call_agent(self, agent_name, system_prompt, user_message):
-        """Call an agent with its configured parameters."""
-        config = AGENT_CONFIGS[agent_name]
+        """
+        Call an agent with its configured parameters.
+        
+        In the original vision, this might route to a specific fine-tuned model (e.g., "Physics-7B").
+        In this MVP, it routes to a general-purpose model with a specialized System Prompt
+        defined in agents.py.
+        """
+        config = AGENT_CONFIGS.get(agent_name, {})
+        # robust fallback if config is missing key
+        model_id = config.get("model", "local-model") 
+        temperature = config.get("temperature", 0.7)
+        max_tokens = config.get("max_tokens", 2000)
+        top_p = config.get("top_p", 1.0)
         
         # Check stop before calling
         if self.should_stop:
@@ -122,10 +146,10 @@ class DiscoveryPipeline:
         response = self.llm.chat(
             system_prompt=system_prompt,
             user_message=user_message,
-            model_id=config["model"],
-            temperature=config["temperature"],
-            max_tokens=config["max_tokens"],
-            top_p=config["top_p"],
+            model_id=model_id,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            top_p=top_p,
             stop_callback=lambda: self.should_stop
         )
         return response
@@ -176,6 +200,7 @@ class DiscoveryPipeline:
         try:
             # ═══════════════════════════════════════════════════════════
             # STEP 1-2: ORCHESTRATOR
+            # Goal: Narrow down the vague user prompt into a specific, testable physics question.
             # ═══════════════════════════════════════════════════════════
             self.progress(1, total_steps, "🎯 Step 1-2: Orchestrator — Selecting target and framing task...")
             self.log("\n" + "═" * 70)
@@ -212,6 +237,8 @@ class DiscoveryPipeline:
 
             # ═══════════════════════════════════════════════════════════
             # STEP 3: HYPOTHESIS GENERATOR
+            # Goal: Brainstorm divergent approaches.
+            # Key difference from standard RAG: We explicitly prompt NOT to rely on "known" solutions.
             # ═══════════════════════════════════════════════════════════
             self.progress(2, total_steps, f"💡 Step 3: Generating {NUM_HYPOTHESES} hypotheses...")
             self.log("\n" + "═" * 70)
@@ -235,7 +262,7 @@ class DiscoveryPipeline:
                 return self._save_results(run_id)
 
             hypotheses_data = safe_json_parse(hypothesis_response)
-            # Normalize to list
+            # Normalize to list to handle varying JSON structures
             if isinstance(hypotheses_data, dict):
                 hypotheses_list = hypotheses_data.get("approaches", hypotheses_data.get("hypotheses", [hypotheses_data]))
             elif isinstance(hypotheses_data, list):
@@ -257,7 +284,8 @@ class DiscoveryPipeline:
                 return self._save_results(run_id)
 
             # ═══════════════════════════════════════════════════════════
-            # STEPS 4-6: FOR EACH HYPOTHESIS
+            # STEPS 4-6: FOR EACH HYPOTHESIS (Parallel Tracks)
+            # This is where the core "Decontextualized Validation" happens.
             # ═══════════════════════════════════════════════════════════
             all_approach_results = []
 
@@ -277,6 +305,8 @@ class DiscoveryPipeline:
 
                 # ─────────────────────────────────────────────────────
                 # STEP 4: STEP DECOMPOSER
+                # Goal: Break the "big idea" into small, checkable physics statements.
+                # Critical: Each statement MUST be "decontextualized" - solvable without knowing the goal.
                 # ─────────────────────────────────────────────────────
                 self.progress(
                     3 + (h_idx * 3 / len(hypotheses_list)),
@@ -316,7 +346,9 @@ class DiscoveryPipeline:
                 self.log(f"  📐 Decomposed into {len(steps_list)} atomic steps")
 
                 # ─────────────────────────────────────────────────────
-                # STEP 5: PHYSICS ORACLE (for each decontextualized question)
+                # STEP 5: PHYSICS ORACLE (The First-Principles Check)
+                # Goal: Validate each step using pure physics reasoning.
+                # This mimics the "Physics-Only Model" from the original vision.
                 # ─────────────────────────────────────────────────────
                 self.progress(
                     4 + (h_idx * 3 / len(hypotheses_list)),
@@ -330,6 +362,7 @@ class DiscoveryPipeline:
                     if self.should_stop:
                         break
 
+                    # Use the "standalone question" which hides the original goal
                     question = step.get("standalone_question",
                                        step.get("physics_question",
                                                 step.get("raw", str(step))))
@@ -358,6 +391,9 @@ class DiscoveryPipeline:
 
                 # ─────────────────────────────────────────────────────
                 # STEP 6: CHAIN ASSEMBLER
+                # Goal: Put the pieces back together.
+                # If Steps 1-5 worked, we now have a set of proven physics facts.
+                # We typically wouldn't get here if we just asked "Build a Warp Drive".
                 # ─────────────────────────────────────────────────────
                 self.progress(
                     5 + (h_idx * 3 / len(hypotheses_list)),
@@ -409,7 +445,9 @@ class DiscoveryPipeline:
                 return self._save_results(run_id)
 
             # ═══════════════════════════════════════════════════════════
-            # STEP 7: ENGINEERING PROPOSER (for valid/fixable chains)
+            # STEP 7: ENGINEERING PROPOSER
+            # Goal: Translate physics into engineering.
+            # "If we need 1000 Tesla, how do we build it?"
             # ═══════════════════════════════════════════════════════════
             self.progress(6, total_steps, "🏗️  Step 7: Engineering Proposer...")
             self.log("\n" + "═" * 70)
@@ -464,7 +502,10 @@ class DiscoveryPipeline:
                 return self._save_results(run_id)
 
             # ═══════════════════════════════════════════════════════════
-            # STEP 8: REQUIREMENT CHALLENGER (iterative loop)
+            # STEP 8: REQUIREMENT CHALLENGER (Iterative Loop)
+            # Goal: The "Devil's Advocate".
+            # The original idea emphasized "constant questioning" to refine ideas.
+            # This loop implements that by critically examining requirements.
             # ═══════════════════════════════════════════════════════════
             self.progress(7, total_steps, f"🔄 Step 8: Requirement Challenger ({CHALLENGE_ITERATIONS} iterations)...")
             self.log("\n" + "═" * 70)
@@ -565,6 +606,8 @@ class DiscoveryPipeline:
 
             # ═══════════════════════════════════════════════════════════
             # STEP 9: OVERSEER / SYNTHESIZER
+            # Goal: The "Team Lead".
+            # Looks at everything (valid ideas, failed ideas, crazy engineering) and picks the winner.
             # ═══════════════════════════════════════════════════════════
             self.progress(8, total_steps, "🔍 Step 9: Overseer synthesizing...")
             self.log("\n" + "═" * 70)
@@ -630,6 +673,7 @@ class DiscoveryPipeline:
 
             # ═══════════════════════════════════════════════════════════
             # STEP 10: FINAL EVALUATOR
+            # Goal: Write the paper.
             # ═══════════════════════════════════════════════════════════
             self.progress(9, total_steps, "📝 Step 10: Final Evaluator — Writing discovery thesis...")
             self.log("\n" + "═" * 70)
